@@ -36,7 +36,7 @@ public final class Profile {
 	/**
 	 * Used internally - do not touch
 	 */
-	boolean loading;
+	boolean loaded;
 
 	Profile(final UUID playerId, final String name) {
 		this.playerId = playerId;
@@ -65,6 +65,15 @@ public final class Profile {
 
 	public String getLocation() {
 		return location;
+	}
+
+	/**
+	 * IF THIS IS FALSE DO NOT USE THE OBJECT
+	 * 
+	 * @return Whether the profile data has been loaded from MySQL yet
+	 */
+	public boolean isLoaded() {
+		return loaded;
 	}
 
 	public void setName(final String name) {

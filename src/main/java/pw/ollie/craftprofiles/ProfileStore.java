@@ -45,6 +45,17 @@ public final class ProfileStore {
 			ps = connection.prepareStatement("");
 			rs = ps.executeQuery();
 
+			final String name = rs.getString(1);
+			final String about = rs.getString(2);
+			final String interests = rs.getString(3);
+			final String gender = rs.getString(4);
+			final String location = rs.getString(5);
+
+			if (name == null || about == null || interests == null
+					|| gender == null || location == null) {
+				throw new SQLException();
+			}
+
 			callback.setName(rs.getString(1));
 			callback.setAbout(rs.getString(2));
 			callback.setInterests(rs.getString(3));

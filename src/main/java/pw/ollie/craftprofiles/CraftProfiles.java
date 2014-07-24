@@ -48,10 +48,23 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 
 		profileManager = new ProfileManager(this);
 		profileStore = new ProfileStore(url, db, user, pass);
+
+		getCommand("profile").setExecutor(this);
+		getServer().getPluginManager().registerEvents(new CPListener(this),
+				this);
 	}
 
 	@Override
 	public void onDisable() {
+		profileManager.storeProfiles();
+	}
+
+	public ProfileManager getProfileManager() {
+		return profileManager;
+	}
+
+	public ProfileStore getProfileStore() {
+		return profileStore;
 	}
 
 	@SuppressWarnings("deprecation")

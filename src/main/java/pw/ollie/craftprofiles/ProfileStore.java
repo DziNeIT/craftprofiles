@@ -48,11 +48,11 @@ public final class ProfileStore {
 					.prepareStatement("CREATE TABLE IF NOT EXISTS profiletable ("
 							+ "uuid VARCHAR(40) PRIMARY KEY,"
 							+ "username VARCHAR(16) NOT NULL,"
-							+ "name TEXT, nameupdated VARCHAR(19),"
-							+ "about TEXT aboutupdated VARCHAR(19),"
-							+ "interests TEXT interestsupdated VARCHAR(19),"
-							+ "gender TEXT genderupdated VARCHAR(19),"
-							+ "location TEXT locationupdated VARCHAR(10))");
+							+ "name TEXT,"
+							+ "about TEXT,"
+							+ "interests TEXT,"
+							+ "gender TEXT,"
+							+ "location TEXT, lastupdated VARCHAR(19))");
 
 			ps.execute();
 		} catch (SQLException ex) {
@@ -76,8 +76,10 @@ public final class ProfileStore {
 		ResultSet rs = null;
 		try {
 			ps = connection
-					.prepareStatement("SELECT name, about, interests, gender, location FROM profiletable WHERE uuid = `"
-							+ callback.getPlayerId().toString() + "`");
+					.prepareStatement("SELECT name, about, interests, gender, location FROM profiletable WHERE uuid = ?");
+
+			ps.setString(1, callback.getPlayerId().toString());
+
 			rs = ps.executeQuery();
 
 			callback.setName(rs.getString(1));
@@ -92,37 +94,27 @@ public final class ProfileStore {
 		}
 	}
 
-	/**
-	 * Commits the given profile data to the profile table in the database
-	 * 
-	 * @param player
-	 *            The unique identifier of the player we are storing data for
-	 * @param name
-	 *            The current name of the player we are storing data for
-	 * @param field
-	 *            The field in the database which is being updated
-	 * @param value
-	 *            What to set the given field's value to
-	 * @param timeModified
-	 *            The time of modification to set for the given field
-	 */
-	public void commitSpecificProfileData(final UUID player, final String name,
-			final String field, final String value, final Date timeModified) {
-		if (!field.toLowerCase().equals(field)) {
-			throw new IllegalArgumentException(field);
-		}
-
+	// TODO: CHANGE
+	public void commitProfileData(final Profile data, final String playername,
+			final Date timeModified) {
 		final Connection connection = getConnection();
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = connection.prepareStatement("UPDATE profiletable SET " + field
-					+ " = ?, " + field + "modified = "
-					+ dateFormat.format(timeModified) + ", username = " + name
-					+ " WHERE uuid = " + player.toString());
+			ps = connection
+					.prepareStatement("UPDATE profiletable SET "
+							+ "username = ?, name = ?, about = ?, interests = ?, gender = ?, location = ?, lastupdated = "
+							+ dateFormat.format(timeModified)
+							+ " WHERE uuid = ?");
 
-			ps.setString(1, value);
+			ps.setString(1, playername);
+			ps.setString(2, data.getName());
+			ps.setString(3, data.getAbout());
+			ps.setString(4, data.getInterests());
+			ps.setString(5, data.getGender());
+			ps.setString(6, data.getLocation());
+			ps.setString(7, data.getPlayerId().toString());
 
 			ps.executeUpdate();
 		} catch (SQLException ex) {
@@ -134,13 +126,16 @@ public final class ProfileStore {
 
 	private Connection getConnection() {
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			return DriverManager.getConnection(url
-					+ (url.endsWith("/") ? "" : "/") + database, username,
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			return DriverManager.getConnection(url + database, username,
 					password);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 

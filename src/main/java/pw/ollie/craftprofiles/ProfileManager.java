@@ -75,27 +75,19 @@ public final class ProfileManager {
 
 	public static final class CommitTask implements Runnable {
 		private final ProfileStore store;
-		private final UUID id;
-		private final String name;
-		private final String field;
-		private final String value;
-		private final Date timeModified;
+		private final Profile profile;
+		private final String playername;
 
-		public CommitTask(final ProfileStore store, final UUID id,
-				final String name, final String field, final String value,
-				final Date timeModified) {
+		public CommitTask(final ProfileStore store, final Profile profile,
+				final String playername) {
 			this.store = store;
-			this.id = id;
-			this.name = name;
-			this.field = field;
-			this.value = value;
-			this.timeModified = timeModified;
+			this.profile = profile;
+			this.playername = playername;
 		}
 
 		@Override
 		public void run() {
-			store.commitSpecificProfileData(id, name, field, value,
-					timeModified);
+			store.commitProfileData(profile, playername, new Date());
 		}
 	}
 }

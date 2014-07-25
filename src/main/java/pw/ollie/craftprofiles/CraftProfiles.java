@@ -42,7 +42,7 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 		final String url = config.getString("url",
 				"jdbc:mysql://localhost:3306"), db = config.getString(
 				"database", "cprofiles"), user = config.getString("db-user",
-				"admin"), pass = config.getString("db-pass", "password");
+				"admin"), pass = config.getString("db-pass", "");
 
 		try {
 			config.save(conf);
@@ -56,6 +56,8 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 		getCommand("profile").setExecutor(this);
 		getServer().getPluginManager().registerEvents(new CPListener(this),
 				this);
+
+		profileStore.initialise();
 	}
 
 	@Override
@@ -175,8 +177,8 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 
 				getServer().getScheduler().runTaskAsynchronously(
 						this,
-						new CommitTask(profileStore, player, name, field,
-								value, new Date()));
+						new CommitTask(profileStore, profileManager
+								.getPlayerProfile(player), name));
 			}
 		}
 

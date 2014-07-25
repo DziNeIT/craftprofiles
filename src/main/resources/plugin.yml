@@ -1,7 +1,15 @@
- name: CraftProfiles
- version: 1.0.0
- description: A simple MySQL profile system
- authors: [DziNelT, LaughingQuoll] 
- main: pw.ollie.craftprofiles.CraftProfiles
+name: CraftProfiles
+version: 1.0.0
+description: A simple MySQL profile system
+authors: [DziNelT, LaughingQuoll] 
+main: pw.ollie.craftprofiles.CraftProfiles
 
-# commands, perms TODO
+commands:
+    profile:
+        description: Profile-related commands
+
+permissions:
+    craftprofiles.use:
+        description: Allows usage of the plugin
+    craftprofiles.view:
+        description: Allows you to view other peoples' profiles

@@ -104,8 +104,7 @@ public final class ProfileStore {
 		try {
 			ps = connection
 					.prepareStatement("UPDATE profiletable SET "
-							+ "username = ?, name = ?, about = ?, interests = ?, gender = ?, location = ?, lastupdated = "
-							+ dateFormat.format(timeModified)
+							+ "username = ?, name = ?, about = ?, interests = ?, gender = ?, location = ?, lastupdated = ?"
 							+ " WHERE uuid = ?");
 
 			ps.setString(1, playername);
@@ -114,7 +113,8 @@ public final class ProfileStore {
 			ps.setString(4, data.getInterests());
 			ps.setString(5, data.getGender());
 			ps.setString(6, data.getLocation());
-			ps.setString(7, data.getPlayerId().toString());
+			ps.setString(7, dateFormat.format(timeModified));
+			ps.setString(8, data.getPlayerId().toString());
 
 			ps.executeUpdate();
 		} catch (SQLException ex) {

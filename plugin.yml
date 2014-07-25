@@ -1,8 +1,0 @@
- name: CraftProfiles
- version: 1
- description: A simple MySQL profile system
- authors: [DziNelT, LaughingQuoll] 
- website: http://forums.bukkit.org/threads/MyPlugin.31337/
- main: NEED TO PUT IT HERE
- 
- commands: 

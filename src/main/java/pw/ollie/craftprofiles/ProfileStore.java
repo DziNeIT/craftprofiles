@@ -10,8 +10,18 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Deals with all of the MySQL code for the plugin, i.e storing profiles in a
+ * database and retrieving data for players
+ */
 public final class ProfileStore {
+	/**
+	 * Database connection information
+	 */
 	private final String url, database, username, password;
+	/**
+	 * The date format used for storing times / dates in the database
+	 */
 	private final DateFormat dateFormat;
 
 	ProfileStore(final String url, final String database,
@@ -24,6 +34,10 @@ public final class ProfileStore {
 		dateFormat = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
 	}
 
+	/**
+	 * Initialises the database by creating the profile table if it doesn't
+	 * exist
+	 */
 	public void initialise() {
 		final Connection connection = getConnection();
 
@@ -48,6 +62,13 @@ public final class ProfileStore {
 		}
 	}
 
+	/**
+	 * Requests data for the given profile by retrieving the profile of the
+	 * player the given profile belongs to
+	 * 
+	 * @param callback
+	 *            The profile object to store the retrieving profile data in
+	 */
 	public void requestProfileData(final Profile callback) {
 		final Connection connection = getConnection();
 
@@ -55,10 +76,9 @@ public final class ProfileStore {
 		ResultSet rs = null;
 		try {
 			ps = connection
-					.prepareStatement("SELECT name, about, interests, gender, location FROM ? WHERE uuid = ?");
+					.prepareStatement("SELECT name, about, interests, gender, location FROM profiletable WHERE uuid = ?");
 
-			ps.setString(1, "profiletable");
-			ps.setString(2, callback.getPlayerId().toString());
+			ps.setString(1, callback.getPlayerId().toString());
 
 			rs = ps.executeQuery();
 
@@ -74,6 +94,20 @@ public final class ProfileStore {
 		}
 	}
 
+	/**
+	 * Commits the given profile data to the profile table in the database
+	 * 
+	 * @param player
+	 *            The unique identifier of the player we are storing data for
+	 * @param name
+	 *            The current name of the player we are storing data for
+	 * @param field
+	 *            The field in the database which is being updated
+	 * @param value
+	 *            What to set the given field's value to
+	 * @param timeModified
+	 *            The time of modification to set for the given field
+	 */
 	public void commitSpecificProfileData(final UUID player, final String name,
 			final String field, final String value, final Date timeModified) {
 		if (!field.toLowerCase().equals(field)) {
@@ -85,16 +119,12 @@ public final class ProfileStore {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = connection
-					.prepareStatement("UPDATE profiletable SET ? = ?, ? = ?, ? = ? WHERE uuid = ?");
+			ps = connection.prepareStatement("UPDATE profiletable SET " + field
+					+ " = ?, " + field + "modified = "
+					+ dateFormat.format(timeModified) + ", username = " + name
+					+ " WHERE uuid = " + player.toString());
 
-			ps.setString(1, field);
-			ps.setString(2, value);
-			ps.setString(3, field + "modified");
-			ps.setString(4, dateFormat.format(timeModified));
-			ps.setString(5, "username");
-			ps.setString(6, name);
-			ps.setString(7, player.toString());
+			ps.setString(1, value);
 
 			ps.executeUpdate();
 		} catch (SQLException ex) {
@@ -119,6 +149,15 @@ public final class ProfileStore {
 		return null;
 	}
 
+	/**
+	 * Closes the given statement and the given results without throwing any
+	 * exceptions
+	 * 
+	 * @param ps
+	 *            The PreparedStatement to close
+	 * @param rs
+	 *            The ResultSet to close
+	 */
 	protected void close(final PreparedStatement ps, final ResultSet rs) {
 		try {
 			ps.close();

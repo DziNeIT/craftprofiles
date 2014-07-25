@@ -63,26 +63,39 @@ public final class ProfileStore {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			// TODO: STATEMENT
-			ps = connection.prepareStatement("");
+			ps = connection
+					.prepareStatement("SELECT `content` FROM name WHERE uuid = "
+							+ callback.getPlayerId().toString());
 			rs = ps.executeQuery();
-
-			final String name = rs.getString(1);
-			final String about = rs.getString(2);
-			final String interests = rs.getString(3);
-			final String gender = rs.getString(4);
-			final String location = rs.getString(5);
-
-			if (name == null || about == null || interests == null
-					|| gender == null || location == null) {
-				throw new SQLException();
-			}
-
 			callback.setName(rs.getString(1));
-			callback.setAbout(rs.getString(2));
-			callback.setInterests(rs.getString(3));
-			callback.setGender(rs.getString(4));
-			callback.setLocation(rs.getString(5));
+			close(ps, rs);
+
+			ps = connection
+					.prepareStatement("SELECT `content` FROM about WHERE uuid = "
+							+ callback.getPlayerId().toString());
+			rs = ps.executeQuery();
+			callback.setAbout(rs.getString(1));
+			close(ps, rs);
+
+			ps = connection
+					.prepareStatement("SELECT `content` FROM interests WHERE uuid = "
+							+ callback.getPlayerId().toString());
+			rs = ps.executeQuery();
+			callback.setInterests(rs.getString(1));
+			close(ps, rs);
+
+			ps = connection
+					.prepareStatement("SELECT `content` FROM gender WHERE uuid = "
+							+ callback.getPlayerId().toString());
+			rs = ps.executeQuery();
+			callback.setGender(rs.getString(1));
+			close(ps, rs);
+
+			ps = connection
+					.prepareStatement("SELECT `content` FROM location WHERE uuid = "
+							+ callback.getPlayerId().toString());
+			rs = ps.executeQuery();
+			callback.setLocation(rs.getString(1));
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {

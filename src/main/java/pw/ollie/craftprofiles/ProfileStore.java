@@ -36,7 +36,7 @@ public final class ProfileStore {
 			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `?` ("
 					+ "uuid VARCHAR(40) PRIMARY KEY,"
 					+ "username VARCHAR(16) NOT NULL,"
-					+ "content TEXT, VARCHAR(19) timeofcommand)");
+					+ "content TEXT, timeofcommand VARCHAR(19))");
 
 			ps.setString(1, "name");
 			ps.addBatch();

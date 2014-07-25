@@ -106,7 +106,7 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 			if (args.length < 2) {
 				sender.sendMessage(ChatColor.DARK_RED
 						+ "Invalid syntax, /profile " + subcommand + " <"
-						+ subcommand + " / playername>");
+						+ subcommand + ">");
 			}
 
 			if (subcommand.equals("view")) {

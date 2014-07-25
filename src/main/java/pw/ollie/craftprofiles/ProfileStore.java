@@ -24,7 +24,7 @@ public final class ProfileStore {
 		this.username = username;
 		this.password = password;
 
-		dateFormat = new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
+		dateFormat = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss");
 	}
 
 	public void initialise() {
@@ -33,9 +33,23 @@ public final class ProfileStore {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			// TODO: STATEMENT - create if not exists player table and all that jazz
+			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `?` ("
+					+ "uuid VARCHAR(40) PRIMARY KEY,"
+					+ "username VARCHAR(16) NOT NULL,"
+					+ "content TEXT, VARCHAR(19) timeofcommand)");
 
-			throw new SQLException();
+			ps.setString(1, "name");
+			ps.addBatch();
+			ps.setString(1, "about");
+			ps.addBatch();
+			ps.setString(1, "interests");
+			ps.addBatch();
+			ps.setString(1, "gender");
+			ps.addBatch();
+			ps.setString(1, "location");
+			ps.addBatch();
+
+			ps.executeBatch();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {

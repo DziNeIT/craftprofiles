@@ -8,12 +8,9 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 public final class ProfileStore {
-	public static final String pt = "profiletable";
-
 	private final String url, database, username, password;
 	private final DateFormat dateFormat;
 
@@ -33,23 +30,17 @@ public final class ProfileStore {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `?` ("
-					+ "uuid VARCHAR(40) PRIMARY KEY,"
-					+ "username VARCHAR(16) NOT NULL,"
-					+ "content TEXT, timeofcommand VARCHAR(19))");
+			ps = connection
+					.prepareStatement("CREATE TABLE IF NOT EXISTS profiletable ("
+							+ "uuid VARCHAR(40) PRIMARY KEY,"
+							+ "username VARCHAR(16) NOT NULL,"
+							+ "name TEXT, nameupdated VARCHAR(19),"
+							+ "about TEXT aboutupdated VARCHAR(19),"
+							+ "interests TEXT interestsupdated VARCHAR(19),"
+							+ "gender TEXT genderupdated VARCHAR(19),"
+							+ "location TEXT locationupdated VARCHAR(10))");
 
-			ps.setString(1, "name");
-			ps.addBatch();
-			ps.setString(1, "about");
-			ps.addBatch();
-			ps.setString(1, "interests");
-			ps.addBatch();
-			ps.setString(1, "gender");
-			ps.addBatch();
-			ps.setString(1, "location");
-			ps.addBatch();
-
-			ps.executeBatch();
+			ps.execute();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
@@ -64,38 +55,16 @@ public final class ProfileStore {
 		ResultSet rs = null;
 		try {
 			ps = connection
-					.prepareStatement("SELECT `content` FROM name WHERE uuid = "
+					.prepareStatement("SELECT * FROM profiletable WHERE uuid = "
 							+ callback.getPlayerId().toString());
 			rs = ps.executeQuery();
+
+			// Odd numbers - we don't care when things were last modified
 			callback.setName(rs.getString(1));
-			close(ps, rs);
-
-			ps = connection
-					.prepareStatement("SELECT `content` FROM about WHERE uuid = "
-							+ callback.getPlayerId().toString());
-			rs = ps.executeQuery();
-			callback.setAbout(rs.getString(1));
-			close(ps, rs);
-
-			ps = connection
-					.prepareStatement("SELECT `content` FROM interests WHERE uuid = "
-							+ callback.getPlayerId().toString());
-			rs = ps.executeQuery();
-			callback.setInterests(rs.getString(1));
-			close(ps, rs);
-
-			ps = connection
-					.prepareStatement("SELECT `content` FROM gender WHERE uuid = "
-							+ callback.getPlayerId().toString());
-			rs = ps.executeQuery();
-			callback.setGender(rs.getString(1));
-			close(ps, rs);
-
-			ps = connection
-					.prepareStatement("SELECT `content` FROM location WHERE uuid = "
-							+ callback.getPlayerId().toString());
-			rs = ps.executeQuery();
-			callback.setLocation(rs.getString(1));
+			callback.setAbout(rs.getString(3));
+			callback.setInterests(rs.getString(5));
+			callback.setGender(rs.getString(7));
+			callback.setLocation(rs.getString(9));
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
@@ -105,19 +74,20 @@ public final class ProfileStore {
 
 	public void commitSpecificProfileData(final UUID player, final String name,
 			final String field, final String value, final Date timeModified) {
+		if (!field.toLowerCase().equals(field)) {
+			throw new IllegalArgumentException(field);
+		}
+
 		final Connection connection = getConnection();
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = connection
-					.prepareStatement("INSERT INTO `?` VALUES (`?`, `?`, `?`, `?`)");
-
-			ps.setString(1, player.toString());
-			ps.setString(2, field);
-			ps.setString(3, name);
-			ps.setString(4, value);
-			ps.setString(5, dateFormat.format(timeModified));
+			ps = connection.prepareStatement("UPDATE profiletable SET `"
+					+ field + "` = `" + value + "`, `" + field
+					+ "modified` = `" + dateFormat.format(timeModified)
+					+ "`, `username` = `" + name + "` WHERE uuid = `"
+					+ player.toString() + "`");
 
 			ps.executeUpdate();
 		} catch (SQLException ex) {

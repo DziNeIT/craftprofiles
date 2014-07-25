@@ -82,11 +82,16 @@ public final class ProfileStore {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = connection.prepareStatement("UPDATE profiletable SET `"
-					+ field + "` = `" + value + "`, `" + field
-					+ "modified` = `" + dateFormat.format(timeModified)
-					+ "`, `username` = `" + name + "` WHERE uuid = `"
-					+ player.toString() + "`");
+			ps = connection
+					.prepareStatement("UPDATE profiletable SET ? = ?, ? = ?, ? = ? WHERE uuid = ?");
+
+			ps.setString(1, field);
+			ps.setString(2, value);
+			ps.setString(3, field + "modified");
+			ps.setString(4, dateFormat.format(timeModified));
+			ps.setString(5, "username");
+			ps.setString(6, name);
+			ps.setString(7, player.toString());
 
 			ps.executeUpdate();
 		} catch (SQLException ex) {

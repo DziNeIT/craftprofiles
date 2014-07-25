@@ -55,8 +55,11 @@ public final class ProfileStore {
 		ResultSet rs = null;
 		try {
 			ps = connection
-					.prepareStatement("SELECT name, about, interests, gender, location FROM profiletable WHERE uuid = "
-							+ callback.getPlayerId().toString());
+					.prepareStatement("SELECT name, about, interests, gender, location FROM ? WHERE uuid = ?");
+
+			ps.setString(1, "profiletable");
+			ps.setString(2, callback.getPlayerId().toString());
+
 			rs = ps.executeQuery();
 
 			callback.setName(rs.getString(1));

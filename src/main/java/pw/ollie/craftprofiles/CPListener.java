@@ -24,6 +24,6 @@ public final class CPListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent event) {
 		final UUID id = event.getPlayer().getUniqueId();
-		plugin.getProfileManager().savePlayerProfile(id);
+		plugin.getProfileManager().unloadProfileData(id);
 	}
 }

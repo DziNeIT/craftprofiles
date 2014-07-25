@@ -5,11 +5,17 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
 
 public final class ProfileStore {
 	public static final String pt = "profiletable";
 
 	private final String url, database, username, password;
+	private final DateFormat dateFormat;
 
 	ProfileStore(final String url, final String database,
 			final String username, final String password) {
@@ -17,6 +23,8 @@ public final class ProfileStore {
 		this.database = database;
 		this.username = username;
 		this.password = password;
+
+		dateFormat = new SimpleDateFormat("YYYY-MM-DD hh:mm:ss");
 	}
 
 	public void initialise() {
@@ -68,24 +76,22 @@ public final class ProfileStore {
 		}
 	}
 
-	public void commitProfileData(final Profile data) {
+	public void commitSpecificProfileData(final UUID player, final String name,
+			final String field, final String value, final Date timeModified) {
 		final Connection connection = getConnection();
 
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = connection.prepareStatement("UPDATE " + pt + " SET "
-					+ "name = ?, " + "about = ?," + "interests = ?,"
-					+ "gender = ?," + "location = ?," + "WHERE uuid = ?");
+			ps = connection
+					.prepareStatement("INSERT INTO `?` VALUES (`?`, `?`, `?`)");
 
-			ps.setString(1, data.getName());
-			ps.setString(2, data.getAbout());
-			ps.setString(3, data.getInterests());
-			ps.setString(4, data.getGender());
-			ps.setString(5, data.getLocation());
-			ps.setString(6, data.getPlayerId().toString());
+			ps.setString(1, field);
+			ps.setString(2, name);
+			ps.setString(3, value);
+			ps.setString(4, dateFormat.format(timeModified));
 
-			ps.execute();
+			ps.executeUpdate();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {

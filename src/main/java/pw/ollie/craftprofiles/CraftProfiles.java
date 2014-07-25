@@ -3,6 +3,8 @@ package pw.ollie.craftprofiles;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +15,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import pw.ollie.craftprofiles.ProfileManager.CommitTask;
 
 public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 	private ProfileManager profileManager;
@@ -56,7 +60,6 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 
 	@Override
 	public void onDisable() {
-		profileManager.storeProfiles();
 	}
 
 	public ProfileManager getProfileManager() {
@@ -137,21 +140,43 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 				return true;
 			}
 
+			final Player pl = (Player) sender;
 			final String remaining = toString(Arrays.copyOfRange(args, 1,
 					args.length - 1));
-			final Profile profile = profileManager
-					.getPlayerProfile(((Player) sender).getUniqueId());
+			final Profile profile = profileManager.getPlayerProfile(pl
+					.getUniqueId());
+			final UUID player = pl.getUniqueId();
+			final String name = pl.getName(), field, value = remaining;
 
 			if (subcommand.equals("name")) {
 				profile.setName(remaining);
+				field = "name";
 			} else if (subcommand.equals("about")) {
 				profile.setAbout(remaining);
+				field = "about";
 			} else if (subcommand.equals("interests")) {
 				profile.setInterests(remaining);
+				field = "interests";
 			} else if (subcommand.equals("gender")) {
 				profile.setGender(remaining);
+				field = "gender";
 			} else if (subcommand.equals("location")) {
 				profile.setLocation(remaining);
+				field = "location";
+			} else {
+				sender.sendMessage(ChatColor.DARK_RED
+						+ "That subcommand doesn't exist!");
+				field = null;
+			}
+
+			if (name != null && field != null && value != null) {
+				sender.sendMessage(ChatColor.GRAY + "You updated your " + field
+						+ "!");
+
+				getServer().getScheduler().runTaskAsynchronously(
+						this,
+						new CommitTask(profileStore, player, name, field,
+								value, new Date()));
 			}
 		}
 

@@ -1,5 +1,6 @@
 package pw.ollie.craftprofiles;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -38,16 +39,6 @@ public final class ProfileManager {
 		return profile;
 	}
 
-	void savePlayerProfile(final UUID player) {
-		for (final Profile profile : profiles) {
-			if (profile.getPlayerId().equals(player)) {
-				plugin.getProfileStore().commitProfileData(profile);
-				profiles.remove(profile);
-				return;
-			}
-		}
-	}
-
 	private Profile createProfile(final UUID player, final String name) {
 		final Profile profile = new Profile(player, name);
 		if (profiles.add(profile)) {
@@ -57,22 +48,12 @@ public final class ProfileManager {
 		}
 	}
 
-	private Profile createProfile(final UUID player, final String name,
-			final String about, final String interests, final String gender,
-			final String location) {
-		final Profile profile = createProfile(player, name);
-		if (profile != null) {
-			profile.setAbout(about);
-			profile.setInterests(interests);
-			profile.setGender(gender);
-			profile.setLocation(location);
-		}
-		return profile;
-	}
-
-	void storeProfiles() {
+	void unloadProfileData(final UUID player) {
 		for (final Profile profile : profiles) {
-			plugin.getProfileStore().commitProfileData(profile);
+			if (profile.getPlayerId().equals(player)) {
+				profiles.remove(profile);
+				return;
+			}
 		}
 	}
 
@@ -89,6 +70,32 @@ public final class ProfileManager {
 		public void run() {
 			profileStore.requestProfileData(profile);
 			profile.loaded = true;
+		}
+	}
+
+	public static final class CommitTask implements Runnable {
+		private final ProfileStore store;
+		private final UUID id;
+		private final String name;
+		private final String field;
+		private final String value;
+		private final Date timeModified;
+
+		public CommitTask(final ProfileStore store, final UUID id,
+				final String name, final String field, final String value,
+				final Date timeModified) {
+			this.store = store;
+			this.id = id;
+			this.name = name;
+			this.field = field;
+			this.value = value;
+			this.timeModified = timeModified;
+		}
+
+		@Override
+		public void run() {
+			store.commitSpecificProfileData(id, name, field, value,
+					timeModified);
 		}
 	}
 }

@@ -109,6 +109,7 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 				sender.sendMessage(ChatColor.DARK_RED
 						+ "Invalid syntax, /profile " + subcommand + " <"
 						+ subcommand + ">");
+				return true;
 			}
 
 			if (subcommand.equals("view")) {
@@ -143,8 +144,12 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 			}
 
 			final Player pl = (Player) sender;
-			final String remaining = toString(Arrays.copyOfRange(args, 1,
-					args.length - 1));
+			final String remaining;
+			if (args.length == 2) {
+				remaining = args[1];
+			} else {
+				remaining = toString(Arrays.copyOfRange(args, 1, args.length));
+			}
 			final Profile profile = profileManager.getPlayerProfile(pl
 					.getUniqueId());
 			final UUID player = pl.getUniqueId();
@@ -186,6 +191,9 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 	}
 
 	private String toString(final String[] array) {
+		if (array.length == 1) {
+			return array[0];
+		}
 		final StringBuilder builder = new StringBuilder();
 		for (final String string : array) {
 			builder.append(string).append(" ");

@@ -82,11 +82,13 @@ public final class ProfileStore {
 
 			rs = ps.executeQuery();
 
-			callback.setName(rs.getString(1));
-			callback.setAbout(rs.getString(2));
-			callback.setInterests(rs.getString(3));
-			callback.setGender(rs.getString(4));
-			callback.setLocation(rs.getString(5));
+			if (rs.next()) {
+				callback.setName(rs.getString(1));
+				callback.setAbout(rs.getString(2));
+				callback.setInterests(rs.getString(3));
+				callback.setGender(rs.getString(4));
+				callback.setLocation(rs.getString(5));
+			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {

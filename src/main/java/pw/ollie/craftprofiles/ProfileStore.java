@@ -55,16 +55,15 @@ public final class ProfileStore {
 		ResultSet rs = null;
 		try {
 			ps = connection
-					.prepareStatement("SELECT * FROM profiletable WHERE uuid = "
+					.prepareStatement("SELECT name, about, interests, gender, location FROM profiletable WHERE uuid = "
 							+ callback.getPlayerId().toString());
 			rs = ps.executeQuery();
 
-			// Odd numbers - we don't care when things were last modified
 			callback.setName(rs.getString(1));
-			callback.setAbout(rs.getString(3));
-			callback.setInterests(rs.getString(5));
-			callback.setGender(rs.getString(7));
-			callback.setLocation(rs.getString(9));
+			callback.setAbout(rs.getString(2));
+			callback.setInterests(rs.getString(3));
+			callback.setGender(rs.getString(4));
+			callback.setLocation(rs.getString(5));
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {

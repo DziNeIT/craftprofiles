@@ -84,12 +84,13 @@ public final class ProfileStore {
 		ResultSet rs = null;
 		try {
 			ps = connection
-					.prepareStatement("INSERT INTO `?` VALUES (`?`, `?`, `?`)");
+					.prepareStatement("INSERT INTO `?` VALUES (`?`, `?`, `?`, `?`)");
 
-			ps.setString(1, field);
-			ps.setString(2, name);
-			ps.setString(3, value);
-			ps.setString(4, dateFormat.format(timeModified));
+			ps.setString(1, player.toString());
+			ps.setString(2, field);
+			ps.setString(3, name);
+			ps.setString(4, value);
+			ps.setString(5, dateFormat.format(timeModified));
 
 			ps.executeUpdate();
 		} catch (SQLException ex) {

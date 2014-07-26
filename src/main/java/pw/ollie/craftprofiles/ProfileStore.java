@@ -18,16 +18,14 @@ public final class ProfileStore {
 	/**
 	 * Database connection information
 	 */
-	private final String url, database, username, password;
+	private final String url, username, password;
 	/**
 	 * The date format used for storing times / dates in the database
 	 */
 	private final DateFormat dateFormat;
 
-	ProfileStore(final String url, final String database,
-			final String username, final String password) {
+	ProfileStore(final String url, final String username, final String password) {
 		this.url = url;
-		this.database = database;
 		this.username = username;
 		this.password = password;
 
@@ -129,8 +127,7 @@ public final class ProfileStore {
 	private Connection getConnection() {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			return DriverManager.getConnection(url + database, username,
-					password);
+			return DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

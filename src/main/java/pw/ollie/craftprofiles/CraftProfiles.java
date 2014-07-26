@@ -39,10 +39,10 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 
 		final YamlConfiguration config = YamlConfiguration
 				.loadConfiguration(conf);
-		final String url = config.getString("url",
-				"jdbc:mysql://localhost:3306/"), db = config.getString(
-				"database", "cprofiles"), user = config.getString("db-user",
-				"admin"), pass = config.getString("db-pass", "");
+		final String url = config.getString("db-url",
+				"jdbc:mysql://localhost:3306/cprofiles"), user = config
+				.getString("db-user", "admin"), pass = config.getString(
+				"db-pass", "");
 
 		try {
 			config.save(conf);
@@ -51,7 +51,7 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 		}
 
 		profileManager = new ProfileManager(this);
-		profileStore = new ProfileStore(url, db, user, pass);
+		profileStore = new ProfileStore(url, user, pass);
 
 		getCommand("profile").setExecutor(this);
 		getServer().getPluginManager().registerEvents(new CPListener(this),

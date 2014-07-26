@@ -40,7 +40,7 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
 		final YamlConfiguration config = YamlConfiguration
 				.loadConfiguration(conf);
 		final String url = config.getString("url",
-				"jdbc:mysql://localhost:3306"), db = config.getString(
+				"jdbc:mysql://localhost:3306/"), db = config.getString(
 				"database", "cprofiles"), user = config.getString("db-user",
 				"admin"), pass = config.getString("db-pass", "");
 

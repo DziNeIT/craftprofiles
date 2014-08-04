@@ -86,6 +86,7 @@ public final class ProfileStore {
 				callback.setInterests(rs.getString(3));
 				callback.setGender(rs.getString(4));
 				callback.setLocation(rs.getString(5));
+				callback.loaded = true;
 			}
 		} catch (SQLException ex) {
 			ex.printStackTrace();

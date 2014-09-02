@@ -3,8 +3,12 @@ package pw.ollie.craftprofiles;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.UUID;
+
+import pw.ollie.craftprofiles.profile.Profile;
+import pw.ollie.craftprofiles.profile.ProfileManager;
+import pw.ollie.craftprofiles.profile.ProfileManager.CommitTask;
+import pw.ollie.craftprofiles.profile.ProfileStore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -14,11 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import pw.ollie.craftprofiles.profile.Profile;
-import pw.ollie.craftprofiles.profile.ProfileManager;
-import pw.ollie.craftprofiles.profile.ProfileStore;
-import pw.ollie.craftprofiles.profile.ProfileManager.CommitTask;
 
 import static org.bukkit.ChatColor.*;
 

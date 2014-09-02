@@ -1,4 +1,4 @@
-package pw.ollie.craftprofiles;
+package pw.ollie.craftprofiles.profile;
 
 import java.util.UUID;
 
@@ -38,7 +38,7 @@ public final class Profile {
 	 */
 	boolean loaded;
 
-	Profile(final UUID playerId, final String name) {
+	Profile(UUID playerId, String name) {
 		this.playerId = playerId;
 		this.name = name;
 	}
@@ -76,23 +76,23 @@ public final class Profile {
 		return loaded;
 	}
 
-	public void setName(final String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
-	public void setAbout(final String about) {
+	public void setAbout(String about) {
 		this.about = about;
 	}
 
-	public void setInterests(final String interests) {
+	public void setInterests(String interests) {
 		this.interests = interests;
 	}
 
-	public void setGender(final String gender) {
+	public void setGender(String gender) {
 		this.gender = gender;
 	}
 
-	public void setLocation(final String location) {
+	public void setLocation(String location) {
 		this.location = location;
 	}
 }

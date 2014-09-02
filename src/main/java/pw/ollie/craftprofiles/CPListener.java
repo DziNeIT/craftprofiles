@@ -11,19 +11,19 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public final class CPListener implements Listener {
 	private final CraftProfiles plugin;
 
-	CPListener(final CraftProfiles plugin) {
+	CPListener(CraftProfiles plugin) {
 		this.plugin = plugin;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerLogin(final PlayerLoginEvent event) {
-		final UUID id = event.getPlayer().getUniqueId();
+	public void onPlayerLogin(PlayerLoginEvent event) {
+		UUID id = event.getPlayer().getUniqueId();
 		plugin.getProfileManager().getPlayerProfile(id);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerQuit(final PlayerQuitEvent event) {
-		final UUID id = event.getPlayer().getUniqueId();
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		UUID id = event.getPlayer().getUniqueId();
 		plugin.getProfileManager().unloadProfileData(id);
 	}
 }

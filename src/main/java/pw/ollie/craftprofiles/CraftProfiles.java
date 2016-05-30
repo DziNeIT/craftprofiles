@@ -114,8 +114,8 @@ public final class CraftProfiles extends JavaPlugin implements CommandExecutor {
                 if (pl != null) {
                     profile = profileManager.getPlayerProfile(pl.getUniqueId());
                 } else {
-                    OfflinePlayer p = Bukkit.getOfflinePlayer(other);
-                    profile = profileManager.getPlayerProfile(p.getUniqueId());
+                    sender.sendMessage(DARK_RED + "That player is not online!");
+                    return true;
                 }
 
                 sender.sendMessage(GOLD + other + "'s Profile");
